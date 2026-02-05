@@ -12,8 +12,23 @@ image.onload = () => {
     canvas.width = image.width;
     canvas.height = image.height;
     ctx.imageSmoothingEnabled = false;
-    ctx.drawImage(image, 0, 0);
+    draw();
 };
+
+function draw(highlightCol = -1, highlightRow = -1) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(image, 0, 0);
+    if (highlightCol >= 0 && highlightRow >= 0) {
+        ctx.strokeStyle = '#ff0000';
+        ctx.lineWidth = 2;
+        // 10x10 border: offset by -1 from tile position, size 10x10
+        ctx.strokeRect(
+            highlightCol * TILE_SIZE - 1,
+            highlightRow * TILE_SIZE - 1,
+            10, 10
+        );
+    }
+}
 
 canvas.addEventListener('mousemove', (e) => {
     const rect = canvas.getBoundingClientRect();
@@ -28,8 +43,10 @@ canvas.addEventListener('mousemove', (e) => {
     const tileIndex = row * GRID_COLS + col + 1;
 
     tileIndexDisplay.textContent = tileIndex;
+    draw(col, row);
 });
 
 canvas.addEventListener('mouseleave', () => {
     tileIndexDisplay.textContent = '—';
+    draw();
 });
